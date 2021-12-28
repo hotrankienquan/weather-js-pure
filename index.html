@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		body {
+			height: 100vh;
+			background-image: url('./img/cold-bg.jpg');
+			background-repeat: no-repeat;
+			background-attachment: fixed;
+			background-size: 100% 100%;
+			background: linear-gradient(to bottom, rgba(0, 0, 0, .7), rgba(0, 0, 0, 0.1), url('./img/cold-bg.jpg'));
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.weather {
+			width: 300px;
+			height: 450px;
+			padding: 30px 40px;
+			background-image: url(./img/cold-bg.jpg);
+			box-shadow: 3px 4px 4px rgba(0, 0, 0, 0.7);
+			border-radius: 3px;
+
+
+		}
+
+		.top input {
+			border: none;
+			padding: 3px 4px;
+			width: 100%;
+			font-size: 25px;
+			outline: none;
+			border-radius: 0 15px 0 15px;
+			transition: 0.4s;
+		}
+
+		.top input:focus {
+			border-radius: 15px 0 15px 0;
+
+		}
+
+		.top .address {
+			font-size: 26px;
+			margin: auto;
+			padding: 3px 0;
+			text-transform: uppercase;
+			text-shadow: 3px 4px 3px rgba(0, 0, 0, .3);
+
+		}
+
+		.mid .value {
+			margin-top: 30px;
+			background: rgba(255, 255, 255, 0.6);
+			font-size: 30px;
+			margin-bottom: 30px;
+
+		}
+
+		.bottom {
+			font-size: 35px;
+			color: pink;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="weather">
+		<div class="top">
+			<input class="inputUser" type="text">
+			<div class="address">
+				<span class="city"></span>
+				<span class="country">viet nam</span>
+			</div>
+			<div class="time">28 12 2021 15:18</div>
+		</div>
+		<div class="mid">
+			<span class="value">20 </span><span>° C</span> 
+		</div>
+		<div class="bottom">CLouds</div>
+	</div>
+	<script>
+		let search = document.querySelector('.inputUser')
+		let city = document.querySelector('.city')
+		let country = document.querySelector('.country')
+		let time = document.querySelector('.time')
+		let value = document.querySelector('.value')
+		let bottom = document.querySelector('.bottom')
+
+
+		async function getData(capitalSearch) {
+
+		
+			let data = await
+				fetch(`https://api.openweathermap.org/data/2.5/weather?q=${capitalSearch}&appid=1146a112059af1be69236dec5b349dc5`)
+					.then(res => res.json())
+			console.log(data)
+			if (data.cod == 200) {
+				city.innerText = data.name
+				country.innerText = data.sys.country
+				value.innerText = Math.round(data.main.temp - 273.15)
+				bottom.innerText = data.weather[0] ? data.weather[0].main : ''
+				time.innerText = new Date().toLocaleString('vi')
+			}
+			else {
+				console.log('not found')
+			}
+
+
+		}
+	
+		search.addEventListener('keypress', function(e){
+			if(e.code  === 'Enter'){
+				let capitalSearch = search.value.trim()
+				getData(capitalSearch)
+			}
+		})
+		getData('ho chi minh')
+	</script>
+</body>
+
+</html>
